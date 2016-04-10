@@ -121,11 +121,12 @@ Parse.Cloud.define('getUsersGeoPoint', function(request, response) {
 	var query = new Parse.Query(Parse.User);
 	var geopoints = [];
 	var question_id = (request.params.question != null) ? request.params.question : "";
+	var sender = (request.params.sender != null) ? request.params.sender : "";
 
 	query.find({
 		success: function(users) {
 			users.forEach(function(user) {
-				if (user.get('geo_point') != null) {
+				if (user.get('geo_point') != null && sender != user.get('email')) {
 					geopoints.push(user.get('geo_point'));
 
 					var query = new Parse.Query(Parse.Installation);
@@ -136,18 +137,9 @@ Parse.Cloud.define('getUsersGeoPoint', function(request, response) {
 						// "aps": {
 						data: {
 							alert: "Check out the new offer for you! ",
-							"message": user.email + "|" + question_id
+							"message": sender
 						}
 						// }
-					}, {
-						success: function() {
-							// Push was successful
-							response.success("Push was sent successfully.");
-						},
-						error: function(error) {
-							// Handle error
-							response.error("Push failed to send with error");
-						}
 					});
 				}
 
@@ -179,7 +171,7 @@ Parse.Cloud.define("sendConfirm", function(request, response) {
 	}, {
 		success: function() {
 			// Push was successful
-			response.success("Push was sent successfully.");
+			response.success("Push was sent successfullyyyyy.");
 		},
 		error: function(error) {
 			// Handle error
@@ -187,31 +179,3 @@ Parse.Cloud.define("sendConfirm", function(request, response) {
 		}
 	});
 });
-
-// Parse.Cloud.define("sendPushToUsers", function(request, response) {
-// 	//  var senderUser = request.user;
-// 	var recipientUserIds = request.params.recipientIds;
-// 	var message = request.params.message;
-
-// 	recipientUserIds.forEach(function(recipientUserId) {
-// 		// Validate the message text.
-// 		// For example make sure it is under 140 characters
-// 		if (message.length > 140) {
-// 			// Truncate and add a ...
-// 			message = message.substring(0, 137) + "...";
-// 		}
-
-
-// 		Parse.Push.send({
-// 			channels: recipientUserId,
-// 			//    where: pushQuery,
-// 			data: {
-// 				alert: message
-// 			}
-// 		}).then(function() {
-// 			response.success("Push was sent successfully.")
-// 		}, function(error) {
-// 			response.error("Push failed to send with error: " + error.message + " recipientUserId: " + recipientUserId + " message: " + message);
-// 		});
-// 	});
-// });
