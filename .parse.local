@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "_default": {
+      "link": "stuber"
+    },
+    "stuber": {
+      "applicationId": "D54tVmK03qzubK2xJi4bmMmGS0lsXaoQQbBPXIAn"
+    }
+  }
+}
