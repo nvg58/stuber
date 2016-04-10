@@ -120,8 +120,9 @@ Parse.Cloud.afterSave(Parse.User, function(request, response) {
 Parse.Cloud.define('getUsersGeoPoint', function(request, response) {
 	var query = new Parse.Query(Parse.User);
 	var geopoints = [];
-	var question_id = (request.params.question != null) ? request.params.question : "";
+	var question = (request.params.question != null) ? request.params.question : "";
 	var sender = (request.params.sender != null) ? request.params.sender : "";
+	var fields = (request.params.fields != null) ? request.params.fields : "";
 
 	query.find({
 		success: function(users) {
@@ -137,7 +138,9 @@ Parse.Cloud.define('getUsersGeoPoint', function(request, response) {
 						// "aps": {
 						data: {
 							alert: "Check out the new offer for you! ",
-							"message": sender
+							"message": sender,
+							"question": question,
+							"fields": fields
 						}
 						// }
 					});
@@ -165,13 +168,14 @@ Parse.Cloud.define("sendConfirm", function(request, response) {
 		// "aps": {
 		data: {
 			alert: "We have found your perfect tutor!",
-			"message": tutor
+			"message": tutor,
+			"confirmation": true
 		}
 		// }
 	}, {
 		success: function() {
 			// Push was successful
-			response.success("Push was sent successfullyyyyy.");
+			response.success(tutor);
 		},
 		error: function(error) {
 			// Handle error
